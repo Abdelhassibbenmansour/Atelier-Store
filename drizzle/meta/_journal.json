@@ -15,6 +15,13 @@
       "when": 1795655758432,
       "tag": "0001_mighty_magma",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795657731185,
+      "tag": "0002_wet_calypso",
+      "breakpoints": true
     }
   ]
 }
