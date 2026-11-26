@@ -84,7 +84,7 @@ export default async function ProductPage({ params }: Props) {
               <Breadcrumbs product={product} />
               <ProductSummary product={product} />
               <PurchasePanel
-                productName={product.name}
+                productId={product.id}
                 sizes={product.sizes}
                 stockStatus={getStockStatus(product)}
               />

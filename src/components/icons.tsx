@@ -64,6 +64,22 @@ export function BagIcon(props: IconProps) {
   );
 }
 
+export function MinusIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M5 12h14" />
+    </Icon>
+  );
+}
+
+export function PlusIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M5 12h14M12 5v14" />
+    </Icon>
+  );
+}
+
 export function ArrowRightIcon(props: IconProps) {
   return (
     <Icon {...props}>

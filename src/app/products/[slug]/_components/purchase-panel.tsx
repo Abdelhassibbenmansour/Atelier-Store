@@ -1,36 +1,52 @@
 "use client";
 
-import { useId, useState } from "react";
+import Link from "next/link";
+import { useActionState, useId, useState, type FormEvent } from "react";
 
+import { addToBag } from "@/lib/bag-actions";
+import type { BagActionResult } from "@/lib/bag-types";
 import type { ProductSize, StockStatus } from "@/lib/product";
 
 type PurchasePanelProps = {
-  productName: string;
+  productId: string;
   sizes?: ProductSize[];
+  /** From the cached product page, so it may be a few minutes old. addToBag re-checks. */
   stockStatus: StockStatus;
 };
 
-// UI only: there is no cart yet. Selecting a size and "adding" shows a confirmation
-// but nothing is persisted. Wire this to the cart once it exists.
-export function PurchasePanel({ productName, sizes, stockStatus }: PurchasePanelProps) {
+const IDLE: BagActionResult = { status: "idle" };
+
+// Posts to the addToBag Server Action, which validates size and stock against the
+// database. Works without JavaScript (plain form post); with it, the result appears
+// inline and the header count updates.
+export function PurchasePanel({ productId, sizes, stockStatus }: PurchasePanelProps) {
   const [size, setSize] = useState<string | null>(null);
-  const [message, setMessage] = useState<{ tone: "error" | "success"; text: string } | null>(null);
+  const [sizeError, setSizeError] = useState(false);
+  const [result, formAction, pending] = useActionState(addToBag, IDLE);
   const legendId = useId();
   const soldOut = stockStatus === "out_of_stock";
 
-  function addToBag() {
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    // Ask for a size before a round trip; the server checks again.
     if (sizes && !size) {
-      setMessage({ tone: "error", text: "Please select a size." });
-      return;
+      event.preventDefault();
+      setSizeError(true);
     }
-    setMessage({
-      tone: "success",
-      text: `${productName}${size ? `, size ${size},` : ""} has been added to your bag.`,
-    });
   }
 
+  const message = soldOut
+    ? { tone: "muted", text: "This piece is currently unavailable. Contact client services for availability." }
+    : sizeError
+      ? { tone: "error", text: "Please select a size." }
+      : result.status !== "idle"
+        ? { tone: result.status === "success" ? "success" : "error", text: result.message }
+        : null;
+
   return (
-    <div className="flex flex-col gap-6">
+    <form action={formAction} onSubmit={onSubmit} className="flex flex-col gap-6">
+      <input type="hidden" name="productId" value={productId} />
+      <input type="hidden" name="quantity" value="1" />
+
       {sizes && (
         <fieldset aria-labelledby={legendId} disabled={soldOut}>
           <div className="mb-3 flex items-center justify-between">
@@ -53,7 +69,7 @@ export function PurchasePanel({ productName, sizes, stockStatus }: PurchasePanel
                   checked={size === option.label}
                   onChange={() => {
                     setSize(option.label);
-                    setMessage(null);
+                    setSizeError(false);
                   }}
                   className="sr-only"
                 />
@@ -67,26 +83,36 @@ export function PurchasePanel({ productName, sizes, stockStatus }: PurchasePanel
 
       <div className="flex flex-col gap-3">
         <button
-          type="button"
-          onClick={addToBag}
-          disabled={soldOut}
+          type="submit"
+          disabled={soldOut || pending}
+          aria-busy={pending}
           className="btn btn-primary btn-lg btn-block"
         >
-          {soldOut ? "Sold out" : "Add to bag"}
+          {soldOut ? "Sold out" : pending ? "Adding…" : "Add to bag"}
         </button>
 
         {/* Always rendered so screen readers pick up changes to the live region. */}
-        <p
-          role="status"
-          className={`text-body-sm ${
-            soldOut ? "text-muted" : message?.tone === "error" ? "text-error" : "text-success"
-          }`}
-        >
-          {soldOut
-            ? "This piece is currently unavailable. Contact client services for availability."
-            : message?.text}
-        </p>
+        <div role="status" className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          {message && (
+            <p
+              className={`text-body-sm ${
+                message.tone === "error"
+                  ? "text-error"
+                  : message.tone === "success"
+                    ? "text-success"
+                    : "text-muted"
+              }`}
+            >
+              {message.text}
+            </p>
+          )}
+          {!pending && !sizeError && result.status === "success" && (
+            <Link href="/bag" className="link text-body-sm">
+              View bag
+            </Link>
+          )}
+        </div>
       </div>
-    </div>
+    </form>
   );
 }
