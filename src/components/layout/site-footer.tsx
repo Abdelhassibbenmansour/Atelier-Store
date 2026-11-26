@@ -1,7 +1,4 @@
-import Link from "next/link";
-
 import { NewsletterForm } from "@/components/layout/newsletter-form";
-import { footerLinks } from "@/lib/sample-data";
 
 export function SiteFooter() {
   return (
@@ -16,23 +13,6 @@ export function SiteFooter() {
           <div className="mt-6 max-w-md">
             <NewsletterForm />
           </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:col-span-6 lg:col-start-7">
-          {footerLinks.map((group) => (
-            <nav key={group.title} aria-label={group.title}>
-              <h2 className="eyebrow">{group.title}</h2>
-              <ul className="mt-5 flex flex-col gap-3">
-                {group.links.map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href} className="link-subtle text-body-sm text-muted hover:text-ink">
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          ))}
         </div>
       </div>
 

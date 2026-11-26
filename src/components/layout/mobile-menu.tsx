@@ -63,9 +63,6 @@ export function MobileMenu({ items }: { items: readonly NavItem[] }) {
             <Link href="/account" className="link-subtle text-body-sm" onClick={() => setOpen(false)}>
               My account
             </Link>
-            <Link href="/contact" className="link-subtle text-body-sm" onClick={() => setOpen(false)}>
-              Client services
-            </Link>
           </div>
         </nav>
       </div>

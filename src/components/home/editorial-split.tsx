@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 import { editorialStories } from "@/lib/sample-data";
 
@@ -7,8 +6,8 @@ export function EditorialSplit() {
   return (
     <section aria-label="Editorial stories" className="grid-editorial">
       {editorialStories.map((story) => (
-        <article key={story.href} className="relative">
-          <div className="relative aspect-portrait overflow-hidden bg-surface md:aspect-[4/5]">
+        <article key={story.title} className="relative">
+          <div className="relative aspect-portrait overflow-hidden bg-surface md:aspect-product">
             <Image
               src={story.image.src}
               alt={story.image.alt}
@@ -22,9 +21,6 @@ export function EditorialSplit() {
             <p className="eyebrow">{story.eyebrow}</p>
             <h2 className="heading-display mt-2 text-headline">{story.title}</h2>
             <p className="mt-2 max-w-sm text-body-sm text-paper/85">{story.description}</p>
-            <Link href={story.href} className="btn btn-inverse btn-sm mt-6">
-              {story.cta}
-            </Link>
           </div>
         </article>
       ))}

@@ -1,11 +1,13 @@
-import { getStockStatus, type Product } from "@/lib/product";
+import { StatusLabel, type StatusTone } from "@/components/ui/status-label";
+import { getStockStatus, type Product, type StockStatus as Status } from "@/lib/product";
 
-const styles = {
-  in_stock: { dot: "bg-success", text: "text-ink" },
-  low_stock: { dot: "bg-warning", text: "text-warning" },
-  out_of_stock: { dot: "bg-subtle", text: "text-muted" },
-} as const;
+const tones: Record<Status, StatusTone> = {
+  in_stock: "success",
+  low_stock: "warning",
+  out_of_stock: "muted",
+};
 
+/** "In stock" / "Only N left" / "Sold out" under the product price. */
 export function StockStatus({ product }: { product: Pick<Product, "stock"> }) {
   const status = getStockStatus(product);
   const label =
@@ -16,9 +18,8 @@ export function StockStatus({ product }: { product: Pick<Product, "stock"> }) {
         : "In stock";
 
   return (
-    <p className={`flex items-center gap-2 text-body-sm ${styles[status].text}`}>
-      <span aria-hidden="true" className={`size-1.5 rounded-full ${styles[status].dot}`} />
+    <StatusLabel as="p" tone={tones[status]}>
       {label}
-    </p>
+    </StatusLabel>
   );
 }

@@ -3,9 +3,12 @@ import Link from "next/link";
 
 import { formatPrice, getStockStatus, type Product } from "@/lib/product";
 
+// Stock states match the product page (StockStatus), from the same getStockStatus rule:
+// sold out → badge + faded image; low (1..LOW_STOCK_THRESHOLD) → "Only N left" line.
 export function ProductCard({ product }: { product: Product }) {
   const [image] = product.images;
-  const soldOut = getStockStatus(product) === "out_of_stock";
+  const status = getStockStatus(product);
+  const soldOut = status === "out_of_stock";
   const badge = soldOut ? "Sold out" : product.isNew ? "New" : null;
 
   return (
@@ -16,7 +19,7 @@ export function ProductCard({ product }: { product: Product }) {
           alt={image.alt}
           fill
           sizes="(min-width: 80rem) 25vw, (min-width: 48rem) 33vw, 50vw"
-          className="object-cover transition-transform duration-500 ease-soft group-hover:scale-[1.03]"
+          className={`object-cover transition-transform duration-500 ease-soft group-hover:scale-[1.03] ${soldOut ? "opacity-60" : ""}`}
         />
         {badge && (
           <span className="absolute top-3 left-3 bg-paper px-2 py-1 text-[0.625rem] leading-none font-medium uppercase tracking-label">
@@ -33,6 +36,9 @@ export function ProductCard({ product }: { product: Product }) {
           </Link>
         </h3>
         <p className="text-body-sm text-muted">{formatPrice(product.price)}</p>
+        {status === "low_stock" && (
+          <p className="text-caption text-warning">Only {product.stock} left</p>
+        )}
       </div>
     </article>
   );

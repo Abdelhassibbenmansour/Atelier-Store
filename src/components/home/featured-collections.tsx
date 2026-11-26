@@ -10,7 +10,7 @@ export function FeaturedCollections() {
       <div className="container-site">
         <SectionHeading id="collections-title" eyebrow="Explore" title="Featured collections" />
 
-        <ul className="grid grid-cols-2 gap-x-1 gap-y-8 lg:grid-cols-4 lg:gap-x-2">
+        <ul className="grid grid-cols-2 gap-x-1 gap-y-8 lg:gap-x-2">
           {featuredCollections.map((collection) => (
             <li key={collection.slug}>
               <Link href={collection.href} className="group block">
@@ -19,7 +19,7 @@ export function FeaturedCollections() {
                     src={collection.image.src}
                     alt={collection.image.alt}
                     fill
-                    sizes="(min-width: 64rem) 25vw, 50vw"
+                    sizes="50vw"
                     className="object-cover transition-transform duration-500 ease-soft group-hover:scale-[1.03]"
                   />
                 </div>

@@ -1,12 +1,11 @@
 import Image from "next/image";
-import Link from "next/link";
 
 import { hero } from "@/lib/sample-data";
 
 export function Hero() {
   return (
     <section aria-labelledby="hero-title" className="relative">
-      <div className="relative aspect-[3/5] overflow-hidden bg-surface sm:aspect-[5/6] lg:aspect-auto lg:h-[calc(100svh-var(--spacing-header))] lg:min-h-[36rem]">
+      <div className="relative aspect-3/5 overflow-hidden bg-surface sm:aspect-5/6 lg:aspect-auto lg:h-[calc(100svh-var(--spacing-header))] lg:min-h-144">
         <Image
           src={hero.image.src}
           alt={hero.image.alt}
@@ -26,14 +25,6 @@ export function Hero() {
             {hero.title}
           </h1>
           <p className="mt-4 max-w-md text-body text-paper/85">{hero.description}</p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href={hero.primaryCta.href} className="btn btn-paper">
-              {hero.primaryCta.label}
-            </Link>
-            <Link href={hero.secondaryCta.href} className="btn btn-inverse">
-              {hero.secondaryCta.label}
-            </Link>
-          </div>
         </div>
       </div>
     </section>
